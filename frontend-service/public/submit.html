@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TechSalary LK – Submit</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+    <a href="/index.html" class="logo">💰 TechSalary LK</a>
+    <ul>
+        <li><a href="/index.html">Search</a></li>
+        <li><a href="/submit.html">Submit Salary</a></li>
+        <li><a href="/pending.html">Vote</a></li>
+        <li><a href="/stats.html">Stats</a></li>
+    </ul>
+    <a href="/login.html" class="auth-btn" id="auth-link">Login / Signup</a>
+</nav>
+
+<div class="container">
+    <div class="form-card">
+        <h2>📝 Submit Your Salary</h2>
+        <p style="color:#888; margin-bottom:1.5rem; font-size:0.9rem;">
+            🔒 Completely anonymous — no login required
+        </p>
+
+        <div id="alert-box"></div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Country</label>
+                <input type="text" id="country" placeholder="Sri Lanka" value="Sri Lanka">
+            </div>
+            <div class="form-group">
+                <label>Company</label>
+                <input type="text" id="company" placeholder="WSO2">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Role</label>
+                <input type="text" id="role" placeholder="Software Engineer">
+            </div>
+            <div class="form-group">
+                <label>Level</label>
+                <select id="level">
+                    <option value="Junior">Junior</option>
+                    <option value="Mid" selected>Mid</option>
+                    <option value="Senior">Senior</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Monthly Salary</label>
+                <input type="number" id="salary" placeholder="250000">
+            </div>
+            <div class="form-group">
+                <label>Currency</label>
+                <select id="currency">
+                    <option value="LKR">LKR</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Years of Experience</label>
+            <input type="number" id="experience" placeholder="3" min="0">
+        </div>
+
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="anonymize">
+                &nbsp; Hide company name in public results
+            </label>
+        </div>
+
+        <button class="btn" onclick="submitSalary()">Submit Anonymously</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    async function submitSalary() {
+        const body = {
+            country:         document.getElementById('country').value,
+            company:         document.getElementById('company').value,
+            role:            document.getElementById('role').value,
+            level:           document.getElementById('level').value,
+            salary:          parseFloat(document.getElementById('salary').value),
+            currency:        document.getElementById('currency').value,
+            yearsExperience: parseInt(document.getElementById('experience').value),
+            anonymize:       document.getElementById('anonymize').checked
+        };
+
+        if (!body.company || !body.role || !body.salary || !body.yearsExperience) {
+            showAlert('alert-box', 'Please fill in all fields', 'error');
+            return;
+        }
+
+        try {
+            const res = await apiCall('POST', '/salaries', body);
+            if (res.ok) {
+                showAlert('alert-box',
+                    '✅ Salary submitted! It will appear after community voting.', 'success');
+                // Clear form
+                document.getElementById('company').value = '';
+                document.getElementById('role').value = '';
+                document.getElementById('salary').value = '';
+                document.getElementById('experience').value = '';
+            } else {
+                showAlert('alert-box', '❌ Submission failed. Try again.', 'error');
+            }
+        } catch (err) {
+            showAlert('alert-box', '❌ Service unavailable.', 'error');
+        }
+    }
+</script>
+</body>
+</html>

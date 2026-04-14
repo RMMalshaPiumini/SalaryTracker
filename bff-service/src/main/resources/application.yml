@@ -1,0 +1,15 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: bff-service
+
+# All internal service URLs
+# In Kubernetes these will point to ClusterIP service names
+services:
+  identity-url:  ${IDENTITY_SERVICE_URL:http://localhost:8081}
+  salary-url:    ${SALARY_SERVICE_URL:http://localhost:8082}
+  vote-url:      ${VOTE_SERVICE_URL:http://localhost:8083}
+  search-url:    ${SEARCH_SERVICE_URL:http://localhost:8084}
+  stats-url:     ${STATS_SERVICE_URL:http://localhost:8085}

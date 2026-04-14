@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechSalary LK – Search</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+    <a href="/index.html" class="logo">💰 TechSalary LK</a>
+    <ul>
+        <li><a href="/index.html">Search</a></li>
+        <li><a href="/submit.html">Submit Salary</a></li>
+        <li><a href="/pending.html">Vote</a></li>
+        <li><a href="/stats.html">Stats</a></li>
+    </ul>
+    <a href="/login.html" class="auth-btn" id="auth-link">Login / Signup</a>
+</nav>
+
+<div class="hero">
+    <h1>Sri Lanka <span>Tech Salaries</span></h1>
+    <p>Community-driven salary transparency for tech professionals</p>
+
+    <div class="search-bar">
+        <input type="text" id="s-country" placeholder="Country (e.g. Sri Lanka)">
+        <input type="text" id="s-company" placeholder="Company (e.g. WSO2)">
+        <input type="text" id="s-role"    placeholder="Role (e.g. Software Engineer)">
+        <select id="s-level">
+            <option value="">All Levels</option>
+            <option value="Junior">Junior</option>
+            <option value="Mid">Mid</option>
+            <option value="Senior">Senior</option>
+        </select>
+        <button onclick="search()">🔍 Search</button>
+    </div>
+</div>
+
+<div class="container">
+    <div id="alert-box"></div>
+    <div id="result-count"></div>
+    <div id="results"></div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    // Load all results on page load
+    window.onload = () => search();
+
+    async function search() {
+        const country = document.getElementById('s-country').value;
+        const company = document.getElementById('s-company').value;
+        const role    = document.getElementById('s-role').value;
+        const level   = document.getElementById('s-level').value;
+
+        let query = '?';
+        if (country) query += `country=${encodeURIComponent(country)}&`;
+        if (company) query += `company=${encodeURIComponent(company)}&`;
+        if (role)    query += `role=${encodeURIComponent(role)}&`;
+        if (level)   query += `level=${encodeURIComponent(level)}&`;
+
+        try {
+            const res = await fetch(`${API_BASE}/search${query}`);
+            const data = await res.json();
+            renderResults(data);
+        } catch (err) {
+            showAlert('alert-box', 'Failed to load results. Make sure all services are running.', 'error');
+        }
+    }
+
+    function renderResults(data) {
+        const container = document.getElementById('results');
+        const countEl   = document.getElementById('result-count');
+
+        if (!data.length) {
+            countEl.innerHTML = '';
+            container.innerHTML = `
+                <div class="empty">
+                    <h3>No results found</h3>
+                    <p>Try different filters or <a href="/submit.html">submit a salary</a></p>
+                </div>`;
+            return;
+        }
+
+        countEl.innerHTML = `<p class="section-title">${data.length} salaries found</p>`;
+        container.innerHTML = data.map(s => `
+            <div class="card">
+                <div class="card-info">
+                    <h3>${s.role} @ ${s.company}</h3>
+                    <p>📍 ${s.country} &nbsp;|&nbsp; 🗓 ${s.yearsExperience} yrs experience</p>
+                    <span class="badge ${levelBadge(s.level)}">${s.level}</span>
+                </div>
+                <div class="card-salary">
+                    <div class="amount">${Number(s.salary).toLocaleString()}</div>
+                    <div class="currency">${s.currency} / month</div>
+                </div>
+            </div>
+        `).join('');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TechSalary LK – Vote</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+    <a href="/index.html" class="logo">💰 TechSalary LK</a>
+    <ul>
+        <li><a href="/index.html">Search</a></li>
+        <li><a href="/submit.html">Submit Salary</a></li>
+        <li><a href="/pending.html">Vote</a></li>
+        <li><a href="/stats.html">Stats</a></li>
+    </ul>
+    <a href="/login.html" class="auth-btn" id="auth-link">Login / Signup</a>
+</nav>
+
+<div class="container">
+    <h2 class="section-title">🗳️ Pending Submissions</h2>
+    <p style="color:#888; margin-bottom:1.5rem; font-size:0.9rem;">
+        Login required to vote. Submissions need 3 upvotes to be approved.
+    </p>
+
+    <div id="alert-box"></div>
+    <div id="pending-list"></div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    window.onload = loadPending;
+
+    async function loadPending() {
+        try {
+            const res = await fetch(`${API_BASE}/salaries/pending`);
+            const data = await res.json();
+            renderPending(data);
+        } catch (err) {
+            showAlert('alert-box', 'Failed to load pending submissions.', 'error');
+        }
+    }
+
+    function renderPending(data) {
+        const container = document.getElementById('pending-list');
+
+        if (!data.length) {
+            container.innerHTML = `
+                <div class="empty">
+                    <h3>No pending submissions</h3>
+                    <p>All caught up! <a href="/submit.html">Submit a salary</a></p>
+                </div>`;
+            return;
+        }
+
+        container.innerHTML = data.map(s => `
+            <div class="card" id="card-${s.id}">
+                <div class="card-info">
+                    <h3>${s.role} @ ${s.company}</h3>
+                    <p>📍 ${s.country} &nbsp;|&nbsp; 🗓 ${s.yearsExperience} yrs</p>
+                    <span class="badge ${levelBadge(s.level)}">${s.level}</span>
+                </div>
+                <div class="card-salary">
+                    <div class="amount">${Number(s.salary).toLocaleString()}</div>
+                    <div class="currency">${s.currency} / month</div>
+                    <div class="vote-buttons" style="margin-top:0.5rem;">
+                        <button class="vote-btn vote-up"
+                            onclick="vote(${s.id}, true)">👍 Upvote</button>
+                        <button class="vote-btn vote-down"
+                            onclick="vote(${s.id}, false)">👎 Downvote</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function vote(submissionId, upvote) {
+        if (!isLoggedIn()) {
+            showAlert('alert-box',
+                '🔐 Please <a href="/login.html">login</a> to vote.', 'info');
+            return;
+        }
+
+        try {
+            const res = await apiCall('POST', '/votes',
+                { submissionId, upvote }, true);
+
+            if (res.ok) {
+                showAlert('alert-box', '✅ Vote recorded!', 'success');
+                // Reload after short delay to reflect any approvals
+                setTimeout(loadPending, 1000);
+            } else {
+                const err = await res.json();
+                showAlert('alert-box',
+                    `❌ ${err.error || 'Could not vote. Already voted?'}`, 'error');
+            }
+        } catch (err) {
+            showAlert('alert-box', '❌ Vote failed.', 'error');
+        }
+    }
+</script>
+</body>
+</html>

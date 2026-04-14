@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TechSalary LK – Stats</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+    <a href="/index.html" class="logo">💰 TechSalary LK</a>
+    <ul>
+        <li><a href="/index.html">Search</a></li>
+        <li><a href="/submit.html">Submit Salary</a></li>
+        <li><a href="/pending.html">Vote</a></li>
+        <li><a href="/stats.html">Stats</a></li>
+    </ul>
+    <a href="/login.html" class="auth-btn" id="auth-link">Login / Signup</a>
+</nav>
+
+<div class="container">
+    <h2 class="section-title">📊 Salary Statistics</h2>
+
+    <div class="search-bar" style="justify-content:flex-start; margin-bottom:1.5rem;">
+        <input type="text" id="s-country" placeholder="Country">
+        <input type="text" id="s-role"    placeholder="Role">
+        <select id="s-level">
+            <option value="">All Levels</option>
+            <option value="Junior">Junior</option>
+            <option value="Mid">Mid</option>
+            <option value="Senior">Senior</option>
+        </select>
+        <button onclick="loadStats()">📊 Get Stats</button>
+    </div>
+
+    <div id="alert-box"></div>
+    <div id="stats-content"></div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    window.onload = loadStats;
+
+    async function loadStats() {
+        const country = document.getElementById('s-country').value;
+        const role    = document.getElementById('s-role').value;
+        const level   = document.getElementById('s-level').value;
+
+        let query = '?';
+        if (country) query += `country=${encodeURIComponent(country)}&`;
+        if (role)    query += `role=${encodeURIComponent(role)}&`;
+        if (level)   query += `level=${encodeURIComponent(level)}&`;
+
+        try {
+            const res = await fetch(`${API_BASE}/stats${query}`);
+            const data = await res.json();
+            renderStats(data);
+        } catch (err) {
+            showAlert('alert-box', 'Failed to load stats.', 'error');
+        }
+    }
+
+    function renderStats(data) {
+        const container = document.getElementById('stats-content');
+
+        if (!data || data.totalEntries === 0) {
+            container.innerHTML = `
+                <div class="empty">
+                    <h3>No data available</h3>
+                    <p>Try different filters or submit more salaries</p>
+                </div>`;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="value">${Number(data.averageSalary).toLocaleString()}</div>
+                    <div class="label">Average Salary (LKR)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">${Number(data.medianSalary).toLocaleString()}</div>
+                    <div class="label">Median Salary (LKR)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">${Number(data.percentile25).toLocaleString()}</div>
+                    <div class="label">25th Percentile</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">${Number(data.percentile75).toLocaleString()}</div>
+                    <div class="label">75th Percentile</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">${data.totalEntries}</div>
+                    <div class="label">Total Approved Entries</div>
+                </div>
+            </div>
+        `;
+    }
+</script>
+</body>
+</html>
