@@ -36,8 +36,8 @@ spec:
                   key: DB_USER
             - name: DB_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: app-config
+                secretKeyRef:
+                  name: app-secret
                   key: DB_PASSWORD
           readinessProbe:
             httpGet:

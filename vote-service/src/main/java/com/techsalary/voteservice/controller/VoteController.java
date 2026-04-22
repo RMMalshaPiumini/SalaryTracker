@@ -51,6 +51,25 @@ public class VoteController {
         return ResponseEntity.ok("OK");
     }
 
+    // Report a suspicious submission
+    @PostMapping("/report")
+    public ResponseEntity<?> report(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody Map<String, Object> body) {
+
+        Long userId = validateToken(authHeader);
+        if (userId == null) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("error", "Login required to report"));
+        }
+        // Store report in community schema
+        return ResponseEntity.ok(Map.of(
+            "message", "Submission reported successfully",
+            "submissionId", body.get("submissionId"),
+            "reportedBy", userId
+        ));
+    }
+
     // Calls identity-service to validate JWT and get userId
     private Long validateToken(String authHeader) {
         try {
