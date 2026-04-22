@@ -1,0 +1,48 @@
+name: CI/CD - Build and Push Docker Images
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - service: identity-service
+            context: ./identity-service
+          - service: salary-submission-service
+            context: ./salary-submission-service
+          - service: vote-service
+            context: ./vote-service
+          - service: search-service
+            context: ./search-service
+          - service: stats-service
+            context: ./stats-service
+          - service: bff-service
+            context: ./bff-service
+          - service: frontend-service
+            context: ./frontend-service
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔐 Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 🐳 Build and Push ${{ matrix.service }}
+        uses: docker/build-push-action@v4
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:${{ github.sha }}
