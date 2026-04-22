@@ -21,6 +21,9 @@ built with microservices architecture and deployed on Azure Kubernetes Service (
 - Maven
 - Node.js 18+
 
+<img width="254" height="257" alt="image" src="https://github.com/user-attachments/assets/8cd8ff6e-0bb7-4340-bebc-157953a4731f" />
+
+
 ## 1. Build Docker Images
 If you want you can pull my images from https://hub.docker.com/repositories/aelita1999
 ```bash
