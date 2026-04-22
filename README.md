@@ -22,6 +22,7 @@ built with microservices architecture and deployed on Azure Kubernetes Service (
 - Node.js 18+
 
 ## 1. Build Docker Images
+If you want you can pull my images from https://hub.docker.com/repositories/aelita1999
 ```bash
 docker build -t YOUR_USERNAME/identity-service:v1 ./identity-service
 docker build -t YOUR_USERNAME/salary-submission-service:v1 ./salary-submission-service
