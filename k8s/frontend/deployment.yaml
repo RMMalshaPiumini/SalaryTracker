@@ -16,6 +16,7 @@ spec:
       containers:
         - name: frontend-service
           image: aelita1999/frontend-service:v1
+          imagePullPolicy: Always
           ports:
             - containerPort: 8087
           readinessProbe:

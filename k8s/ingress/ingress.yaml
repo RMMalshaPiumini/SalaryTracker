@@ -4,13 +4,13 @@ metadata:
   name: techsalary-ingress
   namespace: app
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/cors-allow-origin: "*"
     nginx.ingress.kubernetes.io/enable-cors: "true"
 spec:
   ingressClassName: nginx
   rules:
-    - http:
+    - host: techsalary.20.212.143.72.nip.io
+      http:
         paths:
           - path: /api
             pathType: Prefix

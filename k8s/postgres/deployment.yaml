@@ -24,6 +24,7 @@ spec:
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
+              subPath: pgdata        # ← THIS is the fix
           readinessProbe:
             exec:
               command: ["pg_isready", "-U", "postgres"]

@@ -1,5 +1,5 @@
 // BFF base URL — in Kubernetes this will be the ingress URL
-const API_BASE = 'http://localhost:8086/api';
+const API_BASE = 'http://techsalary.20.212.143.72.nip.io/api';
 
 // Get stored token
 function getToken() {
