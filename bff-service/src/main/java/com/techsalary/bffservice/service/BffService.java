@@ -88,7 +88,7 @@ public class BffService {
     // ─── HELPERS ─────────────────────────────────────────────────────────────
 
     // Check token validity by calling identity-service
-    private boolean isAuthenticated(String authHeader) {
+    public boolean isAuthenticated(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return false;
         }
@@ -110,7 +110,7 @@ public class BffService {
     }
 
     // Generic HTTP forwarder
-    private ResponseEntity<?> forward(HttpMethod method, String url,
+    public ResponseEntity<?> forward(HttpMethod method, String url,
                                       Object body, String authHeader) {
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -131,5 +131,13 @@ public class BffService {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                     .body(Map.of("error", "Service unavailable: " + e.getMessage()));
         }
+    }
+
+    public ResponseEntity<?> report(Map<String, Object> body, String authHeader) {
+        if (!isAuthenticated(authHeader)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Login required to report"));
+        }
+        return forward(HttpMethod.POST, voteUrl + "/votes/report", body, authHeader);
     }
 }

@@ -42,14 +42,7 @@ public class BffController {
     public ResponseEntity<?> report(
             @RequestBody Map<String, Object> body,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
-        if (!bffService.isAuthenticated(authHeader)) {
-            return ResponseEntity.status(401)
-                    .body(Map.of("error", "Login required to report"));
-        }
-        return bffService.forward(
-            org.springframework.http.HttpMethod.POST,
-            voteUrl + "/report", body, authHeader
-        );
+        return bffService.report(body, authHeader);
     }
 
     // ─── VOTING (auth enforced inside BffService) ─────────────────────────────
