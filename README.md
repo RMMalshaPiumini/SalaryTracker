@@ -4,6 +4,8 @@ A community-driven tech salary transparency platform for Sri Lanka,
 built with microservices architecture and deployed on Azure Kubernetes Service (AKS).
 
 ## Architecture
+<img width="1920" height="2202" alt="Full Architecture" src="https://github.com/user-attachments/assets/28fd7ff7-e56c-4ce9-a2b7-5aed369fa193" />
+
 - **Frontend** (Node.js) — UI served on port 8087
 - **BFF** (Spring Boot) — API gateway on port 8086
 - **Identity Service** (Spring Boot) — Auth/JWT on port 8081
