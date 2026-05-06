@@ -3,6 +3,17 @@
 A community-driven tech salary transparency platform for Sri Lanka, 
 built with microservices architecture and deployed on Azure Kubernetes Service (AKS).
 
+
+<img width="1280" height="700" alt="1" src="https://github.com/user-attachments/assets/cd6017bb-9e4d-4bec-ab63-c0d6ebc413c5" />
+
+<img width="1279" height="700" alt="2" src="https://github.com/user-attachments/assets/83b7569c-205a-45c1-bf79-fc0914de1836" />
+
+<img width="1279" height="700" alt="3" src="https://github.com/user-attachments/assets/7868dd3d-1c6c-4ae6-bf8b-3d89c4e7716a" />
+
+<img width="1279" height="701" alt="4" src="https://github.com/user-attachments/assets/fd6b560a-a519-4953-a55c-7ec3b4d90131" />
+
+<img width="1280" height="700" alt="5" src="https://github.com/user-attachments/assets/f24fcf31-dd8c-420c-b049-89dad109b694" />
+
 ## Architecture
 <img width="1920" height="2202" alt="Full Architecture" src="https://github.com/user-attachments/assets/28fd7ff7-e56c-4ce9-a2b7-5aed369fa193" />
 
